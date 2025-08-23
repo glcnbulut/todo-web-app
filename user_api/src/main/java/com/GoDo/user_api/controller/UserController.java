@@ -1,16 +1,20 @@
 // Kullanıcı CRUD işlemlerini yöneten controller.
 package com.GoDo.user_api.controller;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import com.GoDo.user_api.model.User;
 import com.GoDo.user_api.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174", "http://localhost:3000"})
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -72,5 +76,14 @@ public class UserController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    // Kullanıcı kendi bilgilerini döndürür
+    @GetMapping("/me")
+    public ResponseEntity<User> getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        Optional<User> user = userRepository.findByEmail(email);
+        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

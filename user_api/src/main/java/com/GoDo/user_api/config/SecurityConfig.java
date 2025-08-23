@@ -58,32 +58,32 @@ public class SecurityConfig {
    // Uygulamanın güvenlik filtre zincirini tanımlar
    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http
-        .csrf(csrf -> csrf.disable())
-        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-        .authorizeHttpRequests(authorize -> authorize
-            .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-            .requestMatchers("/api/auth/login", "/api/users/add").permitAll()
-            .requestMatchers("/api/users").hasAnyRole("ADMIN") // Sadece ADMIN tüm kullanıcıları görebilir
-            .requestMatchers(HttpMethod.DELETE, "/api/users/delete/**").hasRole("ADMIN") // Sadece ADMIN kullanıcı silebilir
-            .anyRequest().authenticated() // Diğer tüm uç noktalar için kimlik doğrulaması yeterli
-        )
-        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .authenticationProvider(authenticationProvider())
-        .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+        http
+            .authorizeHttpRequests(authorize -> authorize
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .requestMatchers("/api/auth/login", "/api/users/add").permitAll()
+                .requestMatchers("/api/users").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/users/delete/**").hasRole("ADMIN")
+                .anyRequest().authenticated()
+            )
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authenticationProvider(authenticationProvider())
+            .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+            .csrf(csrf -> csrf.disable())
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
-    return http.build();
+        return http.build();
     }
-    
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowCredentials(true);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
+        // CORS ayarlarını sağlayan bean
+        @Bean
+        public CorsConfigurationSource corsConfigurationSource() {
+            CorsConfiguration configuration = new CorsConfiguration();
+            configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:5174", "http://localhost:3000"));
+            configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+            configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+            configuration.setAllowCredentials(true);
+            UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+            source.registerCorsConfiguration("/**", configuration);
+            return source;
+        }
     }
-}
