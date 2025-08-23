@@ -1,47 +1,52 @@
+// React ve useState hook'unu içe aktarıyoruz
 import React, { useState } from "react";
 import axios from "axios";
 
 function LoginPage({ onLogin }) {
-  const [email, setEmail] = useState("");
+  // Kullanıcı adı, şifre ve hata mesajı için state tanımlıyoruz
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  // Form gönderildiğinde çalışır
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    try {
-      const res = await axios.post("/api/login", { email, password });
-      if (res.data && res.data.token) {
-        onLogin(res.data.token);
-      } else {
-        setError("Giriş başarısız. JWT alınamadı.");
-      }
-    } catch (err) {
-      setError("Giriş başarısız. Bilgileri kontrol edin.");
+    // Kullanıcı adı veya şifre boşsa hata göster
+    if (!username || !password) {
+      setError("Kullanıcı adı ve şifre gereklidir.");
+      return;
     }
+    // Giriş fonksiyonunu çağır
+    onLogin(username, password);
   };
 
+  // Arayüzü render ediyoruz
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Giriş Yap</h2>
-      {error && <div className="error">{error}</div>}
-      <input
-        type="email"
-        placeholder="E-posta"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        required
-      />
-      <input
-        type="password"
-        placeholder="Şifre"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        required
-      />
-      <button type="submit">Giriş</button>
-    </form>
+    <div className="login-container">
+      <h2>Kullanıcı Girişi</h2>
+      <form onSubmit={handleSubmit}>
+        {/* Kullanıcı adı inputu */}
+        <input
+          type="text"
+          placeholder="Kullanıcı Adı"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        {/* Şifre inputu */}
+        <input
+          type="password"
+          placeholder="Şifre"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        {/* Hata mesajı gösterimi */}
+        {error && <div className="error">{error}</div>}
+        <button type="submit">Giriş Yap</button>
+      </form>
+    </div>
   );
 }
 
+// Bileşeni dışa aktarıyoruz
 export default LoginPage;

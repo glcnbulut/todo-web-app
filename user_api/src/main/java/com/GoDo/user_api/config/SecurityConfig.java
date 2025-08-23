@@ -1,3 +1,4 @@
+// Uygulamanın güvenlik ayarlarını ve JWT filtrelerini yöneten konfigürasyon dosyası.
 package com.GoDo.user_api.config;
 
 import com.GoDo.user_api.filter.JwtRequestFilter;
@@ -28,21 +29,25 @@ public class SecurityConfig {
     private final CustomUserDetailsService userDetailsService;
     private final JwtRequestFilter jwtRequestFilter;
 
+    // Constructor, bağımlılıkları enjekte eder
     public SecurityConfig(CustomUserDetailsService userDetailsService, JwtRequestFilter jwtRequestFilter) {
         this.userDetailsService = userDetailsService;
         this.jwtRequestFilter = jwtRequestFilter;
     }
 
+    // Şifreleri hashlemek için encoder bean'i
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    // AuthenticationManager bean'i
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
+    // AuthenticationProvider bean'i
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService);
@@ -50,6 +55,7 @@ public class SecurityConfig {
         return authProvider;
     }
 
+   // Uygulamanın güvenlik filtre zincirini tanımlar
    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http

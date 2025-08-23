@@ -1,3 +1,4 @@
+// ToDo işlemlerini yöneten servis sınıfı.
 package com.GoDo.todo_api.service;
 
 import com.GoDo.todo_api.model.Todo;
@@ -19,18 +20,22 @@ public class TodoService {
         this.todoRepository = todoRepository;
     }
 
+    // Tüm ToDo'ları döndürür
     public List<Todo> findAll() {
         return todoRepository.findAll();
     }
 
+    // ID ile ToDo döndürür
     public Optional<Todo> findById(Long id) {
         return todoRepository.findById(id);
     }
 
+    // Yeni ToDo kaydeder
     public Todo save(Todo todo) {
         return todoRepository.save(todo);
     }
 
+    // ID ile ToDo siler
     public void deleteById(Long id) {
         todoRepository.deleteById(id);
     }
@@ -41,6 +46,7 @@ public class TodoService {
      * @param user Kullanıcı
      * @return Kullanıcının görev listesi
      */
+    // Bir kullanıcıya ait tüm ToDo'ları döndürür
     public List<Todo> findByUser(User user) {
         return todoRepository.findByUser(user);
     }
@@ -53,6 +59,7 @@ public class TodoService {
      * @return Güncellenmiş Todo
      * @throws RuntimeException Eğer Todo bulunamazsa
      */
+    // Var olan bir ToDo'yu günceller
     public Todo updateTodo(Long id, Todo updatedTodo) {
         return todoRepository.findById(id).map(todo -> {
             todo.setTitle(updatedTodo.getTitle());

@@ -1,3 +1,4 @@
+// Kullanıcı CRUD işlemlerini yöneten controller.
 package com.GoDo.user_api.controller;
 
 import com.GoDo.user_api.model.User;
@@ -17,16 +18,19 @@ public class UserController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    // Controller'ın constructor'ı, bağımlılıkları enjekte eder
     public UserController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
+    // Tüm kullanıcıları döndürür
     @GetMapping
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
+    // Yeni kullanıcı ekler
     @PostMapping("/add")
     public ResponseEntity<User> addUser(@RequestBody User user) {
         try {
@@ -38,6 +42,7 @@ public class UserController {
         }
     }
     
+    // Kullanıcı güncelleme işlemi
     @PutMapping("/update/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
         Optional<User> optionalUser = userRepository.findById(id);

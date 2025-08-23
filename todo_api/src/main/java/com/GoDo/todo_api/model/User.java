@@ -17,6 +17,7 @@ import java.util.List;
 @Data
 public class User implements UserDetails {
 
+// Kullanıcı entity'si. Veritabanı ile kullanıcı bilgisini tutar ve Spring Security UserDetails implementasyonu sağlar.
 @Id
 @GeneratedValue(strategy = GenerationType.IDENTITY)
 private Long id;
@@ -31,34 +32,40 @@ private String role = "ROLE_USER";
 @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 @JsonIgnore // Bu etiketi ekliyoruz ki sonsuz döngü hatası oluşmasın
 private List<Todo> todos = new ArrayList<>();
-@Override
-@JsonIgnore
-public Collection<? extends GrantedAuthority> getAuthorities() {
-return Collections.singletonList(new SimpleGrantedAuthority(this.role));
-}
+	// Kullanıcının yetkilerini döndürür
+	@Override
+	@JsonIgnore
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return Collections.singletonList(new SimpleGrantedAuthority(this.role));
+	}
 
-@Override
-public String getUsername() {
-return this.email;
-}
+	// Kullanıcının username bilgisini döndürür (email)
+	@Override
+	public String getUsername() {
+		return this.email;
+	}
 
-@Override
-public boolean isAccountNonExpired() {
-return true;
-}
+	// Hesap süresi doldu mu kontrolü
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
 
-@Override
-public boolean isAccountNonLocked() {
-return true;
-}
+	// Hesap kilitli mi kontrolü
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
 
-@Override
-public boolean isCredentialsNonExpired() {
-return true;
-}
+	// Şifre süresi doldu mu kontrolü
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
 
-@Override
-public boolean isEnabled() {
-return true;
-}
+	// Kullanıcı aktif mi kontrolü
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
 }

@@ -1,3 +1,4 @@
+// Kullanıcı işlemlerini yöneten servis sınıfı.
 package com.GoDo.todo_api.service;
 
 import com.GoDo.todo_api.model.User;
@@ -21,21 +22,24 @@ this.userRepository = userRepository;
 this.passwordEncoder = passwordEncoder; // Bu satırı ekleyin
 }
 
-public List<User> findAll() {
-return userRepository.findAll();
-}
+	// Tüm kullanıcıları döndürür
+	public List<User> findAll() {
+		return userRepository.findAll();
+	}
 
-public Optional<User> findById(Long id) {
-return userRepository.findById(id);
-}
+	// ID ile kullanıcıyı döndürür
+	public Optional<User> findById(Long id) {
+		return userRepository.findById(id);
+	}
 
-public User save(User user) {
-// Kullanıcıyı kaydetmeden önce şifreyi şifrele
-user.setPassword(passwordEncoder.encode(user.getPassword())); // Bu satırı değiştirin
-return userRepository.save(user);
-}
+	// Yeni kullanıcı kaydeder (şifreyi şifreler)
+	public User save(User user) {
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		return userRepository.save(user);
+	}
 
-public void deleteById(Long id) {
-userRepository.deleteById(id);
-}
+	// ID ile kullanıcıyı siler
+	public void deleteById(Long id) {
+		userRepository.deleteById(id);
+	}
 }

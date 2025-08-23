@@ -1,3 +1,4 @@
+// Kullanıcı kimlik doğrulama işlemlerini yöneten controller.
 package com.GoDo.todo_api.controller;
 
 import com.GoDo.todo_api.dto.LoginRequest;
@@ -19,13 +20,14 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
 
+    // Controller'ın constructor'ı, bağımlılıkları enjekte eder
     @Autowired
     public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
-        
     }
 
+    // Kullanıcı login isteği için endpoint
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         try {

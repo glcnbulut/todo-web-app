@@ -1,8 +1,10 @@
+// React ve gerekli hook'ları ile axios'u içe aktarıyoruz
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 function UserCrudPage({ token, onLogout }) {
   const [users, setUsers] = useState([]);
+  // Form verisi için state tanımlıyoruz
   const [form, setForm] = useState({ name: "", email: "", password: "", surname: "", role: "USER" });
   const [editId, setEditId] = useState(null);
   const [error, setError] = useState("");
@@ -11,6 +13,7 @@ function UserCrudPage({ token, onLogout }) {
   // JWT header
   const authHeader = { headers: { Authorization: `Bearer ${token}` } };
 
+  // Kullanıcıları API'den çeker
   const fetchUsers = async () => {
     try {
       const res = await axios.get("/api", authHeader);
@@ -20,15 +23,18 @@ function UserCrudPage({ token, onLogout }) {
     }
   };
 
+  // Sayfa yüklendiğinde kullanıcıları getir
   useEffect(() => {
     fetchUsers();
     // eslint-disable-next-line
   }, []);
 
+  // Form inputları değiştiğinde çalışır
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  // Kullanıcı ekleme işlemi
   const handleAdd = async (e) => {
     e.preventDefault();
     setError("");
@@ -43,11 +49,13 @@ function UserCrudPage({ token, onLogout }) {
     }
   };
 
+  // Kullanıcıyı düzenlemek için formu doldur
   const handleEdit = (user) => {
     setEditId(user.id);
     setForm({ name: user.name, email: user.email, password: user.password, surname: user.surname, role: user.role });
   };
 
+  // Kullanıcı güncelleme işlemi
   const handleUpdate = async (e) => {
     e.preventDefault();
     setError("");
@@ -63,6 +71,7 @@ function UserCrudPage({ token, onLogout }) {
     }
   };
 
+  // Kullanıcı silme işlemi
   const handleDelete = async (id) => {
     setError("");
     setSuccess("");
@@ -75,6 +84,7 @@ function UserCrudPage({ token, onLogout }) {
     }
   };
 
+  // Arayüzü render ediyoruz
   return (
     <div>
       <button onClick={onLogout} style={{ float: "right" }}>Çıkış Yap</button>

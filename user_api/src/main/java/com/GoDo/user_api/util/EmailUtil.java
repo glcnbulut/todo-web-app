@@ -1,3 +1,5 @@
+// Kullanıcıya e-posta göndermek için yardımcı sınıf.
+// Kullanıcıya e-posta göndermek için yardımcı sınıf.
 package com.GoDo.user_api.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,8 @@ public class EmailUtil {
     @Autowired
     private JavaMailSender mailSender;
 
+    // Kullanıcıya yeni ToDo atandığında e-posta gönderir
+    // Kullanıcıya yeni ToDo atandığında e-posta gönderir
     public void sendTodoAssignedEmail(String to, String todoTitle) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);

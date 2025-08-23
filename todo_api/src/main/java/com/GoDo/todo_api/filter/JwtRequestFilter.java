@@ -1,3 +1,4 @@
+// Her istekte JWT doğrulaması yapan Spring Security filtresi.
 package com.GoDo.todo_api.filter;
 
 import com.GoDo.todo_api.service.UserDetailsServiceImpl;
@@ -25,16 +26,18 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private final UserDetailsServiceImpl userDetailsService;
     private final JwtUtil jwtUtil;
 
+    // Constructor, bağımlılıkları enjekte eder
     @Autowired
     public JwtRequestFilter(UserDetailsServiceImpl userDetailsService, JwtUtil jwtUtil) {
         this.userDetailsService = userDetailsService;
         this.jwtUtil = jwtUtil;
     }
 
+    // Her HTTP isteğinde JWT doğrulaması yapar
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain chain)
+    protected void doFilterInternal(@org.springframework.lang.NonNull HttpServletRequest request,
+                                    @org.springframework.lang.NonNull HttpServletResponse response,
+                                    @org.springframework.lang.NonNull FilterChain chain)
             throws ServletException, IOException {
 
         final String authorizationHeader = request.getHeader("Authorization");

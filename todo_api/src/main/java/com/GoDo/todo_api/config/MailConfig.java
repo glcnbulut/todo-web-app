@@ -1,3 +1,4 @@
+// E-posta gönderimi için JavaMailSender bean'ini tanımlayan konfigürasyon dosyası.
 package com.GoDo.todo_api.config;
 
 import org.springframework.context.annotation.Bean;
@@ -9,10 +10,10 @@ import java.util.Properties;
 
 @Configuration
 public class MailConfig {
+    // JavaMailSender bean'i oluşturur
     @Bean
     public JavaMailSender javaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        // SMTP ayarlarını application.properties'ten alacak şekilde bırakıyoruz
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.auth", "true");

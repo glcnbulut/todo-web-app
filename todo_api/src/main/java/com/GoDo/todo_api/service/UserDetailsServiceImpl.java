@@ -1,3 +1,4 @@
+// Spring Security için özel UserDetailsService implementasyonu. Kullanıcıyı email ile bulur.
 package com.GoDo.todo_api.service;
 
 import com.GoDo.todo_api.model.User;
@@ -19,18 +20,15 @@ public UserDetailsServiceImpl(UserRepository userRepository) {
 this.userRepository = userRepository;
 }
 
-@Override
-public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-    System.out.println("loadUserByUsername çağrıldı: " + email);
-    Optional<User> userOpt = userRepository.findByEmail(email);
-    System.out.println("findByEmail döndü: " + userOpt.isPresent());
-
-    User user = userOpt.orElseThrow(() -> new UsernameNotFoundException("Kullanıcı bulunamadı: " + email));
-
-    return new org.springframework.security.core.userdetails.User(
-            user.getEmail(),
-            user.getPassword(),
-            List.of(new SimpleGrantedAuthority(user.getRole())) // burada role veriliyor
-    );
-}
+    // Email ile kullanıcıyı bulup UserDetails nesnesi döndürür
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        User user = userOpt.orElseThrow(() -> new UsernameNotFoundException("Kullanıcı bulunamadı: " + email));
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail(),
+                user.getPassword(),
+                List.of(new SimpleGrantedAuthority(user.getRole()))
+        );
+    }
 }

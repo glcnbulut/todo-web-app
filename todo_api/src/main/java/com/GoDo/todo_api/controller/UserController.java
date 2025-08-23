@@ -1,3 +1,4 @@
+// Kullanıcı CRUD işlemlerini yöneten controller.
 package com.GoDo.todo_api.controller;
 
 import com.GoDo.todo_api.model.User;
@@ -13,17 +14,20 @@ public class UserController {
 
 private final UserService userService;
 
+// Controller'ın constructor'ı, bağımlılıkları enjekte eder
 @Autowired
 public UserController(UserService userService) {
 this.userService = userService;
 }
 
+// Yeni kullanıcı ekler
 @PostMapping
 public ResponseEntity<User> createUser(@RequestBody User user) {
 User savedUser = userService.save(user);
 return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
 }
 
+// ID ile kullanıcıyı döndürür
 @GetMapping("/{id}")
 public ResponseEntity<User> getUserById(@PathVariable Long id) {
 return userService.findById(id)

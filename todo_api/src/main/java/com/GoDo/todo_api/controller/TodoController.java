@@ -1,3 +1,4 @@
+// ToDo CRUD işlemlerini ve kullanıcıya atama, e-posta gönderimini yöneten controller.
 package com.GoDo.todo_api.controller;
 
 import com.GoDo.todo_api.model.Todo;
@@ -23,6 +24,7 @@ private final TodoService todoService;
 private final UserRepository userRepository;
 private final EmailUtil emailUtil;
 
+// Controller'ın constructor'ı, bağımlılıkları enjekte eder
 @Autowired
 public TodoController(TodoService todoService, UserRepository userRepository, EmailUtil emailUtil) {
     this.todoService = todoService;
@@ -30,6 +32,7 @@ public TodoController(TodoService todoService, UserRepository userRepository, Em
     this.emailUtil = emailUtil;
 }
 
+// Kullanıcıya ait tüm ToDo'ları döndürür
 @GetMapping
 public ResponseEntity<List<Todo>> getAllTodos(Authentication authentication) {
 String userEmail = authentication.getName();
@@ -44,6 +47,7 @@ return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 }
 }
 
+// ID ile ToDo döndürür
 @GetMapping("/{id}")
 public ResponseEntity<Todo> getTodoById(@PathVariable Long id, Authentication authentication) {
 String userEmail = authentication.getName();
@@ -54,6 +58,7 @@ return todoService.findById(id)
 }
 
 
+// Yeni ToDo oluşturur ve kullanıcıya atar, e-posta gönderir
 @PostMapping
 public ResponseEntity<Todo> createTodo(@RequestBody Todo todo, @RequestParam Long userId) {
     Optional<User> userOptional = userRepository.findById(userId);
@@ -68,6 +73,7 @@ public ResponseEntity<Todo> createTodo(@RequestBody Todo todo, @RequestParam Lon
     }
 }
 
+// ToDo güncelleme işlemi
 @PutMapping("/{id}")
 public ResponseEntity<Todo> updateTodo(@PathVariable Long id, @RequestBody Todo updatedTodo, Authentication authentication) {
 String userEmail = authentication.getName();

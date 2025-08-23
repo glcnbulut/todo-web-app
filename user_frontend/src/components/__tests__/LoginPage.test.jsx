@@ -1,3 +1,5 @@
+// LoginPage bileşeninin testleri. Giriş formu ve hata mesajı davranışlarını kontrol eder.
+
 import '@testing-library/jest-dom';
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";

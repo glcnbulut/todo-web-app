@@ -1,3 +1,4 @@
+// Kullanıcı entity'si için JPA repository arayüzü. Veritabanı işlemlerini sağlar.
 package com.GoDo.user_api.repository;
 
 import com.GoDo.user_api.model.User;
@@ -8,5 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+    // Email ile kullanıcıyı bulur
     Optional<User> findByEmail(String email);
 }

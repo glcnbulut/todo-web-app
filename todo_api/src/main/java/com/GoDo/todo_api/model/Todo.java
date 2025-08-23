@@ -1,3 +1,4 @@
+// ToDo entity'si. Görev bilgisini ve kullanıcı ilişkisini tutar.
 package com.GoDo.todo_api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -36,12 +37,13 @@ private LocalDateTime createdAt;
 @Column(name = "updated_at")
 private LocalDateTime updatedAt;
 
-  @PrePersist
+    // Oluşturulma zamanı için JPA callback
+    @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
 
-    // Eğer güncelleme zamanı da gerekiyorsa:
+    // Güncellenme zamanı için JPA callback
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();

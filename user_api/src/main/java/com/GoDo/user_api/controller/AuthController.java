@@ -1,3 +1,4 @@
+// Kullanıcı kimlik doğrulama işlemlerini yöneten controller.
 package com.GoDo.user_api.controller;
 
 import com.GoDo.user_api.service.CustomUserDetailsService;
@@ -18,12 +19,14 @@ public class AuthController {
     private final JwtTokenUtil jwtTokenUtil;
     private final CustomUserDetailsService userDetailsService;
 
+    // Controller'ın constructor'ı, bağımlılıkları enjekte eder
     public AuthController(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil, CustomUserDetailsService userDetailsService) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenUtil = jwtTokenUtil;
         this.userDetailsService = userDetailsService;
     }
 
+    // Kullanıcı login isteği için endpoint
     @PostMapping("/login")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
         try {
@@ -40,12 +43,14 @@ public class AuthController {
         return ResponseEntity.ok(new AuthenticationResponse(jwt));
     }
 
+    // Login isteği için DTO
     @Data
     private static class AuthenticationRequest {
         private String email;
         private String password;
     }
 
+    // Login cevabı için DTO
     @Data
     private static class AuthenticationResponse {
         private final String jwt;

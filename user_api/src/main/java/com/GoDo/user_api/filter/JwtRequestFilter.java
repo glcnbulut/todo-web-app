@@ -1,3 +1,4 @@
+// Her istekte JWT doğrulaması yapan Spring Security filtresi.
 package com.GoDo.user_api.filter;
 
 import com.GoDo.user_api.service.CustomUserDetailsService;
@@ -23,11 +24,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private final JwtTokenUtil jwtTokenUtil;
     private final CustomUserDetailsService userDetailsService;
 
+    // Constructor, bağımlılıkları enjekte eder
     public JwtRequestFilter(JwtTokenUtil jwtTokenUtil, CustomUserDetailsService userDetailsService) {
         this.jwtTokenUtil = jwtTokenUtil;
         this.userDetailsService = userDetailsService;
     }
 
+    // Her HTTP isteğinde JWT doğrulaması yapar
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
             throws ServletException, IOException {
@@ -41,7 +44,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             try {
                 username = jwtTokenUtil.extractUsername(jwtToken);
             } catch (Exception e) {
-                // JWT Token is invalid or expired
+                // JWT Token geçersiz veya süresi dolmuş
             }
         }
 

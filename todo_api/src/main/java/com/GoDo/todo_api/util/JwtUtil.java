@@ -1,3 +1,4 @@
+// JWT token üretimi, doğrulama ve çözümleme işlemlerini yapan yardımcı sınıf.
 package com.GoDo.todo_api.util;
 
 import io.jsonwebtoken.Claims;
@@ -28,12 +29,14 @@ public class JwtUtil {
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
     }
     // Token oluşturma (UserDetails üzerinden)
+    // Kullanıcı bilgisiyle JWT token üretir
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", userDetails.getAuthorities().iterator().next().getAuthority());
         return createToken(claims, userDetails.getUsername());
     }
 
+    // Token oluşturma işlemi
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
                 .setClaims(claims)
@@ -46,16 +49,19 @@ public class JwtUtil {
     }
 
     // Token'dan username çekme
+    // Token'dan kullanıcı adını (email) çıkarır
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
     // Token'dan claim çekme
+    // Token'dan claim çıkarır
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
+    // Token'dan tüm claim'leri çıkarır
     private Claims extractAllClaims(String token) {
         JwtParser parser = Jwts.parserBuilder()
             .setSigningKey(key)

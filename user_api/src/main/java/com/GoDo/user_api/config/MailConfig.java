@@ -1,3 +1,4 @@
+// E-posta gönderimi için JavaMailSender bean'ini tanımlayan konfigürasyon dosyası.
 package com.GoDo.user_api.config;
 
 import org.springframework.context.annotation.Bean;
@@ -8,6 +9,7 @@ import java.util.Properties;
 
 @Configuration
 public class MailConfig {
+    // JavaMailSender bean'i oluşturur
     @Bean
     public JavaMailSender javaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();

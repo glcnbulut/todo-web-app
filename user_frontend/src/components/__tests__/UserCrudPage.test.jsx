@@ -1,3 +1,4 @@
+// UserCrudPage bileşeninin testleri. Kullanıcı ekleme, güncelleme ve silme işlemlerini test eder.
 import '@testing-library/jest-dom';
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
