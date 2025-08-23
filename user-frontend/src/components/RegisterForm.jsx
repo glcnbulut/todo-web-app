@@ -22,7 +22,7 @@ const RegisterForm = () => {
     setSuccess('');
     try {
       // user_api'deki /api/users endpointine POST isteği
-  await axios.post('http://localhost:8081/api/users', form);
+  await axios.post('http://localhost:8081/api/users/add', form);
       setSuccess('Kayıt başarılı! Giriş yapabilirsiniz.');
       setForm({ name: '', surname: '', email: '', password: '' });
     } catch (err) {
