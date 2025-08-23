@@ -1,30 +1,29 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, NavLink, Navigate } from 'react-router-dom';
-
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import UserList from './pages/UserList';
+import React, { useState } from "react";
+import LoginPage from "./components/LoginPage";
+import UserCrudPage from "./components/UserCrudPage";
 
 function App() {
-  return (
-    <Router>
-      <header>
-        <nav>
-          <NavLink to="/">Anasayfa</NavLink>
-          <NavLink to="/login">Giriş Yap</NavLink>
-          <NavLink to="/register">Kayıt Ol</NavLink>
-        </nav>
-      </header>
+  const [token, setToken] = useState(localStorage.getItem("token") || "");
 
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/users" element={<UserList />} />
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
-    </Router>
+  const handleLogin = (jwt) => {
+    setToken(jwt);
+    localStorage.setItem("token", jwt);
+  };
+
+  const handleLogout = () => {
+    setToken("");
+    localStorage.removeItem("token");
+  };
+
+  return (
+    <div className="container">
+      <h1>User Management</h1>
+      {!token ? (
+        <LoginPage onLogin={handleLogin} />
+      ) : (
+        <UserCrudPage token={token} onLogout={handleLogout} />
+      )}
+    </div>
   );
 }
 
