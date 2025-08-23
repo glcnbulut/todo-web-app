@@ -4,6 +4,7 @@ import com.GoDo.todo_api.model.Todo;
 import com.GoDo.todo_api.model.User;
 import com.GoDo.todo_api.repository.UserRepository;
 import com.GoDo.todo_api.service.TodoService;
+import com.GoDo.todo_api.util.EmailUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +21,13 @@ public class TodoController {
 
 private final TodoService todoService;
 private final UserRepository userRepository;
+private final EmailUtil emailUtil;
 
 @Autowired
-public TodoController(TodoService todoService, UserRepository userRepository) {
-this.todoService = todoService;
-this.userRepository = userRepository;
+public TodoController(TodoService todoService, UserRepository userRepository, EmailUtil emailUtil) {
+    this.todoService = todoService;
+    this.userRepository = userRepository;
+    this.emailUtil = emailUtil;
 }
 
 @GetMapping
@@ -50,18 +53,15 @@ return todoService.findById(id)
 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
 }
 
-@PostMapping
-public ResponseEntity<Todo> createTodo(@RequestBody Todo todo, Authentication authentication) {
-    String userEmail = authentication.getName();
-    Optional<User> userOptional = userRepository.findByEmail(userEmail);
 
+@PostMapping
+public ResponseEntity<Todo> createTodo(@RequestBody Todo todo, @RequestParam Long userId) {
+    Optional<User> userOptional = userRepository.findById(userId);
     if (userOptional.isPresent()) {
         todo.setUser(userOptional.get());
         Todo savedTodo = todoService.save(todo);
-
-        // 🔽 BURAYA LOG EKLE
-        System.out.println("Kayıt edilen todo: " + savedTodo);
-
+        // Kullanıcıya bilgilendirici e-posta gönder
+        emailUtil.sendTodoAssignedEmail(userOptional.get().getEmail(), todo.getTitle());
         return new ResponseEntity<>(savedTodo, HttpStatus.CREATED);
     } else {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);

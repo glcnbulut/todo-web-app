@@ -3,6 +3,8 @@ import api from '../services/api';
 
 const TodoList = () => {
   const [todos, setTodos] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [selectedUserId, setSelectedUserId] = useState('');
   const [newTodoTitle, setNewTodoTitle] = useState('');
   const [editingTodo, setEditingTodo] = useState(null);
   const [updatedTitle, setUpdatedTitle] = useState('');
@@ -29,14 +31,33 @@ const TodoList = () => {
 
   useEffect(() => {
     fetchTodos();
+    fetchUsers();
   }, []);
+
+  const fetchUsers = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await api.get('/api/users', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setUsers(response.data);
+    } catch (error) {
+      console.error('Kullanıcılar getirilirken hata:', error);
+    }
+  };
 
   const handleAddTodo = async (e) => {
     e.preventDefault();
+    if (!selectedUserId) {
+      setError('Lütfen bir kullanıcı seçin.');
+      return;
+    }
     try {
       const token = localStorage.getItem('token');
       await api.post(
-        '/api/todos',
+        `/api/todos?userId=${selectedUserId}`,
         {
           title: newTodoTitle,
           description: '',
@@ -49,6 +70,7 @@ const TodoList = () => {
         }
       );
       setNewTodoTitle('');
+      setSelectedUserId('');
       fetchTodos();
     } catch (error) {
       console.error("Görev eklenirken hata:", error);
@@ -131,6 +153,18 @@ return (
           placeholder="Yeni görev ekle..."
           required
         />
+        <select
+          value={selectedUserId}
+          onChange={e => setSelectedUserId(e.target.value)}
+          required
+        >
+          <option value="">Kullanıcı seçin</option>
+          {users.map(user => (
+            <option key={user.id} value={user.id}>
+              {user.name} {user.surname} ({user.email})
+            </option>
+          ))}
+        </select>
         <button type="submit">Ekle</button>
       </form>
       <ul>
