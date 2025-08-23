@@ -1,0 +1,6 @@
+/user-api
+
+# Build artifacts
+/target
+*.jar
+
