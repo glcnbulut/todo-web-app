@@ -7,12 +7,25 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class TodoBffService {
-    /**
-     * Örnek fonksiyon: Backend servislerinden yapılacaklar listesini çeker.
-     * Gerçek projede burada HTTP çağrıları veya iş mantığı olur.
-     */
-    public String getTodoList(String userId) {
-        // Burada backend API'ye istek atılabilir
-        return "Yapılacaklar listesi: " + userId;
+    // Burada iş mantığı ve backend çağrıları yer alacak
+
+    public java.util.List<com.GoDo.todo_bff.dto.TodoDto> getAllTodos() {
+        return new java.util.ArrayList<>();
+    }
+
+    public com.GoDo.todo_bff.dto.TodoDto getTodoById(Long id) {
+        return new com.GoDo.todo_bff.dto.TodoDto();
+    }
+
+    public com.GoDo.todo_bff.dto.TodoDto createTodo(com.GoDo.todo_bff.dto.TodoDto todoDto) {
+        return todoDto;
+    }
+
+    public com.GoDo.todo_bff.dto.TodoDto updateTodo(Long id, com.GoDo.todo_bff.dto.TodoDto todoDto) {
+        return todoDto;
+    }
+
+    public void deleteTodo(Long id) {
+        // Silme işlemi
     }
 }
