@@ -24,4 +24,27 @@ cd user_api
 Notlar:
 - `JWT_SECRET` için üretimde en az 256-bit güvenli bir anahtar kullanın. CI ve testlerde kısa string toleranslıdır çünkü `JwtTokenUtil` base64 değilse SHA-256 türetir.
 - CI: `.github/workflows/maven.yml` dosyası push/PR başına `mvn test` çalıştırır.
+---
+
+Önemli notlar ve ipuçları
+
+- JWT_SECRET üretimi (güçlü anahtar önerisi):
+
+```bash
+# 32 byte (256-bit) base64 olarak üret
+openssl rand -base64 32
+```
+
+- Curl ile test yaparken shell-quoting kaynaklı hatalardan kaçınmak için payload'ı dosyaya yazıp `--data-binary @file` kullanın. Alternatif olarak payload'ı base64leyip shell içinde `base64 --decode` ile gönderin.
+
+- Local test çalıştırma (user_api):
+
+```bash
+cd user_api
+./mvnw -DskipTests=false test
+```
+
+- Eğer GitHub remote push sırasında workflow dosyaları reddedilirse (örn. Personal Access Token'ın `workflow` izni yoksa), iki çözüm:
+	- 1) GitHub web UI kullanarak repo > Add file > Create new file yoluyla `.github/workflows/maven.yml` dosyasını ekleyin.
+	- 2) Kendi hesabınızda PAT oluşturup `workflow` scope verin, sonra `git push` yapın.
 
