@@ -7,6 +7,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -36,9 +39,8 @@ public class JwtTokenUtil {
     // Token oluşturma işlemi
     // Token oluşturma işlemi
     private String createToken(Map<String, Object> claims, String subject) {
-        byte[] keyBytes = Decoders.BASE64.decode(secret);
-        Key key = Keys.hmacShaKeyFor(keyBytes);
-        return Jwts.builder()
+    Key key = getSigningKey();
+    return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
@@ -77,8 +79,26 @@ public class JwtTokenUtil {
 
     // Token'dan tüm claim'leri çıkarır
     private Claims extractAllClaims(String token) {
-        byte[] keyBytes = Decoders.BASE64.decode(secret);
-        Key key = Keys.hmacShaKeyFor(keyBytes);
+        Key key = getSigningKey();
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+    }
+
+    // Attempts to decode the configured secret as Base64; if that fails,
+    // derive a 256-bit key from the raw secret using SHA-256 so short/plain
+    // secrets work in tests and local runs.
+    private Key getSigningKey() {
+        byte[] keyBytes;
+        try {
+            keyBytes = Decoders.BASE64.decode(secret);
+        } catch (Exception e) {
+            try {
+                MessageDigest sha = MessageDigest.getInstance("SHA-256");
+                keyBytes = sha.digest(secret.getBytes(StandardCharsets.UTF_8));
+            } catch (NoSuchAlgorithmException ex) {
+                // Should never happen for SHA-256; rethrow as runtime if it does
+                throw new IllegalStateException(ex);
+            }
+        }
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 }

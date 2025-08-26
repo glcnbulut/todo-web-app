@@ -61,7 +61,9 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("/api/auth/login", "/api/users/add").permitAll()
+                // allow auth endpoints (login, register)
+                .requestMatchers("/api/auth/**").permitAll()
+                // legacy add-user remains protected; prefer /api/auth/register for public registration
                 .requestMatchers("/api/users").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/users/delete/**").hasRole("ADMIN")
                 .anyRequest().authenticated()

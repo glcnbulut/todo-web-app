@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# temporary debug logs
+/tmp/*.log
+app*.log

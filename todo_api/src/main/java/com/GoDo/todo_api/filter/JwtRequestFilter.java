@@ -18,6 +18,9 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 
 @Component
@@ -25,6 +28,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final UserDetailsServiceImpl userDetailsService;
     private final JwtUtil jwtUtil;
+    private static final Logger logger = LoggerFactory.getLogger(JwtRequestFilter.class);
 
     // Constructor, bağımlılıkları enjekte eder
     @Autowired
@@ -51,11 +55,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             try {
                 username = jwtUtil.extractUsername(jwt);
             } catch (ExpiredJwtException e) {
-                System.out.println("JWT token süresi doldu: " + e.getMessage());
+                logger.debug("JWT token süresi doldu", e);
             } catch (SignatureException | MalformedJwtException e) {
-                System.out.println("Geçersiz JWT token imzası veya formatı: " + e.getMessage());
+                logger.debug("Geçersiz JWT token imzası veya formatı", e);
             } catch (Exception e) {
-                System.out.println("JWT token işlenirken beklenmeyen hata: " + e.getMessage());
+                logger.debug("JWT token işlenirken beklenmeyen hata", e);
             }
         }
 

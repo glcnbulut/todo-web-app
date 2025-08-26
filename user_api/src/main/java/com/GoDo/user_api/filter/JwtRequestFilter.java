@@ -17,12 +17,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final JwtTokenUtil jwtTokenUtil;
     private final CustomUserDetailsService userDetailsService;
+    private static final Logger logger = LoggerFactory.getLogger(JwtRequestFilter.class);
 
     // Constructor, bağımlılıkları enjekte eder
     public JwtRequestFilter(JwtTokenUtil jwtTokenUtil, CustomUserDetailsService userDetailsService) {
@@ -34,6 +37,17 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
             throws ServletException, IOException {
+    // lightweight debug via logger at debug level
+    try {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Incoming request: ")
+            .append(request.getMethod()).append(" ").append(request.getRequestURI()).append("\n");
+        String authHdr = request.getHeader("Authorization");
+        sb.append("Authorization header: ")
+            .append(authHdr == null ? "<none>" : authHdr).append("\n");
+        logger.debug(sb.toString());
+    } catch (Exception ignored) {
+    }
         final String requestTokenHeader = request.getHeader("Authorization");
 
         String username = null;
