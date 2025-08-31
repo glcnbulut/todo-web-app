@@ -1,0 +1,15 @@
+version: '3.3'
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: todo_mssql
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=gulcanB1.
+    ports:
+      - "1433:1433"
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "gulcanB1.", "-Q", "SELECT 1"]
+      interval: 10s
+      retries: 12
+    restart: unless-stopped
