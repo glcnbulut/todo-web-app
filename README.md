@@ -21,10 +21,6 @@ cd user_api
 ./mvnw -DskipTests spring-boot:run
 ```
 
-Notlar:
-- `JWT_SECRET` için üretimde en az 256-bit güvenli bir anahtar kullanın. CI ve testlerde kısa string toleranslıdır çünkü `JwtTokenUtil` base64 değilse SHA-256 türetir.
-- CI: `.github/workflows/maven.yml` dosyası push/PR başına `mvn test` çalıştırır.
----
 
 Önemli notlar ve ipuçları
 
